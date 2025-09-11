@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - EcommerceWebApp</title>
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EcommerceWebApp.styles.css" asp-append-version="true" />
@@ -20,6 +21,15 @@
                             <li class="nav-item">
                                 <a class="nav-link text-white" href="javascript:history.back()">
                                     <i class="fa-solid fa-chevron-left fa-xl"></i>
+                                </a>
+                            </li>
+                        }
+
+                        @foreach (var productCategory in ViewBag.ProductCategories)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" style="font-weight: 500" href="#">
+                                    @productCategory
                                 </a>
                             </li>
                         }
