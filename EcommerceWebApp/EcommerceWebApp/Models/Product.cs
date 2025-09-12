@@ -6,7 +6,7 @@ namespace EcommerceWebApp.Models
     public class Product
     {
         [JsonProperty("id")]
-        public int Id { get; set; }
+        public int ProductId { get; set; }
 
         [JsonProperty("name")]
         public string ProductName { get; set; }
@@ -36,7 +36,25 @@ namespace EcommerceWebApp.Models
 
         [JsonProperty("images")]
         public List<ImageUrl> ImageUrl { get; set; }
+
+        public List<Variation> Variations { get; set; }
     }
+
+    public class Variation
+    {
+        [JsonProperty("id")]
+        public int ProductId { get; set; }
+
+        [JsonProperty("name")]
+        public string ProductName { get; set; }
+
+        [JsonProperty("sku")]
+        public string StockKeepingUnit { get; set; }
+
+        [JsonProperty("image")]
+        public List<ImageUrl> ImageUrl { get; set; }
+    }
+
 
     public class ProductResponse
     {

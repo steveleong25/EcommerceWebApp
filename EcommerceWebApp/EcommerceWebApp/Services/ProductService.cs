@@ -1,4 +1,5 @@
-﻿using EcommerceWebApp.Models;
+﻿using EcommerceWebApp.Data;
+using EcommerceWebApp.Models;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.IO;
@@ -12,11 +13,13 @@ public class ProductService
 {
     private readonly HttpClient _httpClient;
     private readonly ApiSettings _apiSettings;
+    private readonly ProductRepository _productRepository;
 
-    public ProductService(HttpClient httpClient, IOptions<ApiSettings> apiSettings)
+    public ProductService(HttpClient httpClient, IOptions<ApiSettings> apiSettings, ProductRepository productRepository)
     {
         _httpClient = httpClient;
         _apiSettings = apiSettings.Value;
+        _productRepository = productRepository;
     }
 
     public async Task<List<Product>> GetProductsAsync()
@@ -35,6 +38,10 @@ public class ProductService
         response.EnsureSuccessStatusCode();
 
         var jsonString = await response.Content.ReadAsStringAsync();
+
+        dynamic jsonData = JsonConvert.DeserializeObject(jsonString);
+
+        _productRepository.AddProducts(jsonData);
 
         // Deserialize to the wrapper object first
         var productResponse = JsonConvert.DeserializeObject<ProductResponse>(jsonString);
