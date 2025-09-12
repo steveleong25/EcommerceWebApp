@@ -1,3 +1,4 @@
+using EcommerceWebApp.Data;
 using EcommerceWebApp.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,8 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.AddSingleton<ProductRepository>();
 
 var app = builder.Build();
 
