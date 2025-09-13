@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 
 namespace EcommerceWebApp.Models
 {
@@ -36,25 +35,7 @@ namespace EcommerceWebApp.Models
 
         [JsonProperty("images")]
         public List<ImageUrl> ImageUrl { get; set; }
-
-        public List<Variation> Variations { get; set; }
     }
-
-    public class Variation
-    {
-        [JsonProperty("id")]
-        public int ProductId { get; set; }
-
-        [JsonProperty("name")]
-        public string ProductName { get; set; }
-
-        [JsonProperty("sku")]
-        public string StockKeepingUnit { get; set; }
-
-        [JsonProperty("image")]
-        public List<ImageUrl> ImageUrl { get; set; }
-    }
-
 
     public class ProductResponse
     {
