@@ -2,12 +2,8 @@
 using EcommerceWebApp.Models;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System.IO;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 public class ProductService
 {
@@ -24,14 +20,15 @@ public class ProductService
 
     public async Task<List<Product>> GetProductsAsync()
     {
-        // Add Basic Auth header
-        var byteArray = Encoding.ASCII.GetBytes($"{_apiSettings.Username}:{_apiSettings.Password}");
-        _httpClient.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+        if (_productRepository.GetProducts().Result.Any())
+        {
+            return _productRepository.GetProducts().Result.Where(p => p.ProductType.Equals("variable")).ToList();
+        }
 
+        var byteArray = Encoding.ASCII.GetBytes($"{_apiSettings.Username}:{_apiSettings.Password}");
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
         _httpClient.DefaultRequestHeaders.Accept.Clear();
-        _httpClient.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
+        _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         // Call API
         var response = await _httpClient.GetAsync(_apiSettings.GetProductsUrl);

@@ -25,7 +25,7 @@ namespace EcommerceWebApp.Data
 
             try
             {
-                string sql = GetInsertProductQuery();
+                string sql = GenerateInsertProductsQuery();
 
                 using var cmd = new MySqlCommand(sql, conn, transaction);
 
@@ -56,11 +56,53 @@ namespace EcommerceWebApp.Data
             }
         }
 
+        public async Task<List<Product>> GetProducts()
+        {
+            var products = new List<Product>();
+
+            using (var conn = new MySqlConnection(_connectionString))
+            {
+                conn.Open();
+                string sql = GenerateGetProductsQuery();
+
+                using (var cmd = new MySqlCommand(sql, conn))
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var product = new Product
+                        {
+                            ProductId = reader.GetInt32("product_id"),
+                            ProductName = reader.GetString("product_name"),
+                            ProductType = reader.GetString("product_type"),
+                            ProductStatus = reader.GetString("product_status"),
+                            RegularPrice = reader.GetDecimal("regular_price"),
+                            CatalogVisibility = reader.GetBoolean("catalog_visibility") == true ? "visible" : string.Empty,
+                            StockKeepingUnit = reader.GetString("sku"),
+                            StockQuantity = reader.IsDBNull(reader.GetOrdinal("stock_quantity")) ? 0 : reader.GetInt32("stock_quantity"),
+                            UnitOfMeasurement = reader.IsDBNull(reader.GetOrdinal("unit_of_measurement")) ? "" : reader.GetString("unit_of_measurement").ToUpper(),
+                        };
+
+                        // Handle JSON columns
+                        string categoryJson = reader.IsDBNull(reader.GetOrdinal("category")) ? "[]" : reader.GetString("category");
+                        product.Categories = JsonConvert.DeserializeObject<List<Category>>(categoryJson);
+
+                        string imageJson = reader.IsDBNull(reader.GetOrdinal("image_urls")) ? "[]" : reader.GetString("image_urls");
+                        product.ImageUrl = JsonConvert.DeserializeObject<List<ImageUrl>>(imageJson);
+
+                        products.Add(product);
+                    }
+                }
+            }
+
+            return products;
+        }
+
         private List<Product> ExtractProduct(dynamic productJsonData)
         {
             var productList = new List<Product>();
 
-            foreach(var product in productJsonData.products)
+            foreach (var product in productJsonData.products)
             {
                 var p = new Product();
 
@@ -88,7 +130,14 @@ namespace EcommerceWebApp.Data
             return productList;
         }
 
-        private string GetInsertProductQuery()
+        private string GenerateGetProductsQuery()
+        {
+            return @"SELECT `product_id`, `product_name`, `product_type`, `product_status`, `regular_price`, `category`,
+                    `catalog_visibility`, `sku`, `stock_quantity`, `unit_of_measurement`, `image_urls`
+                    FROM `products`;";
+        }
+
+        private string GenerateInsertProductsQuery()
         {
             return @"INSERT INTO `products` (`product_id`, `product_name`, `product_type`, `product_status`, 
                         `regular_price`, `category`, `catalog_visibility`, `sku`, 
