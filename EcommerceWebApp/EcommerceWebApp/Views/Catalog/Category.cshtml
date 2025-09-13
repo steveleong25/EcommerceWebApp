@@ -1,0 +1,51 @@
+﻿@model List<Product>
+
+@foreach(var product in Model)
+{
+    <div class="mx-5 mt-3 border-bottom">
+        <div class="d-flex position-relative">
+            <div class="me-auto">
+                <span class="fw-bold mr-3">@product.StockKeepingUnit</span>
+                <span class="fw-bold" style="color: #31DE96">@product.StockQuantity stock</span>
+                <p>@product.ProductName</p>
+                <p>RM @product.RegularPrice</p>
+            </div>
+            <div>
+                <img src="@(product.ImageUrl.Any() ? product.ImageUrl[0].SourceMedium : "")" class="flex-shrink-0 ms-auto rounded" alt="Product Image" height="200" width="200">
+            </div>
+
+        </div>
+        <div class="d-flex justify-content-end gap-2 my-3">
+            <select class="form-select w-auto">
+                @foreach (var option in product.UnitOfMeasurement.Split(';'))
+                {
+                    <option value="@option">@option</option>
+                }
+            </select>
+
+            <div class="input-group w-auto" style="width: 120px;">
+                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="decreaseQty(this)">-</button>
+                <input type="text" class="form-control text-center" value="1" />
+                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="increaseQty(this)">+</button>
+            </div>
+
+            <button class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center align-middle" style="width:40px;height:40px;">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+    </div>
+}
+
+<script>
+    function decreaseQty(btn) {
+        let input = btn.parentNode.querySelector("input");
+        let value = parseInt(input.value) || 1;
+        if (value > 1) input.value = value - 1;
+    }
+
+    function increaseQty(btn) {
+        let input = btn.parentNode.querySelector("input");
+        let value = parseInt(input.value) || 1;
+        input.value = value + 1;
+    }
+</script>
