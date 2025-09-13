@@ -25,12 +25,12 @@
                             </li>
                         }
 
-                        @foreach (var productCategory in ViewBag.ProductCategories)
+                        @if (ViewBag.SelectedCategory != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-white" style="font-weight: 500" href="#">
-                                    @productCategory
-                                </a>
+                                <span class="nav-link text-white" style="font-weight: 600">
+                                    @ViewBag.SelectedCategory
+                                </span>
                             </li>
                         }
                     </ul>
@@ -53,15 +53,19 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+    <div class="d-flex align-items-center mx-3 mb-4">
+        <input class="form-control me-2" placeholder="Search" />
+        <a class="btn">
+            <i class="fa-solid fa-cart-shopping fa-lg"></i>
+        </a>
     </div>
 
+    @RenderBody()
+
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - EcommerceWebApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="mx-3">
+            &copy; 2025 - EcommerceWebApp
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
