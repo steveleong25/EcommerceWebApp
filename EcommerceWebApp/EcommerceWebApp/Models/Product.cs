@@ -25,16 +25,15 @@ namespace EcommerceWebApp.Models
         [JsonProperty("sku")]
         public string StockKeepingUnit { get; set; }
 
-        [JsonProperty("regular_price")]
-        public decimal RegularPrice { get; set; }
-
         [JsonProperty("stock_quantity")]
         public int StockQuantity { get; set; }
 
-        public string UnitOfMeasurement { get; set; }
-
         [JsonProperty("images")]
         public List<ImageUrl> ImageUrl { get; set; }
+
+        public string VariationIds { get; set; }
+
+        public List<Variation> Variations { get; set; }
     }
 
     public class ProductResponse

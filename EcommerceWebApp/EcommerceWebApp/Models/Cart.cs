@@ -13,4 +13,10 @@
         public string UnitOfMeasurement { get; set; }
         public decimal UnitPrice { get; set; }
     }
+
+    public class CartItemRequest
+    {
+        public int VariationId { get; set; }
+        public int Quantity { get; set; }
+    }
 }
