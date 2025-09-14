@@ -20,9 +20,10 @@ public class ProductService
 
     public async Task<List<Product>> GetProductsAsync()
     {
-        if (_productRepository.GetProducts().Result.Any())
+        var products = await _productRepository.GetProducts();
+        if (products.Any())
         {
-            return _productRepository.GetProducts().Result.Where(p => p.ProductType.Equals("variable")).ToList();
+            return products.Where(p => p.ProductType.Equals("variable")).ToList();
         }
 
         var byteArray = Encoding.ASCII.GetBytes($"{_apiSettings.Username}:{_apiSettings.Password}");
