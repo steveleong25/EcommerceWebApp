@@ -28,7 +28,10 @@
                         <img src="@(product.ImageUrl.Any() ? product.ImageUrl[0].SourceSmall : "")" class="card-img-top" alt="Product Image" height="150" />
                         <div class="card-body">
                             <h5 class="card-title">@product.ProductName</h5>
-                            <span class="card-text">RM @product.RegularPrice</span>
+                            @if (product.Variations.Any())
+                            {
+                                <span class="card-text">RM @product.Variations[0].RegularPrice / @product.Variations[0].UnitOfMeasurement</span>
+                            }
                             <a class="stretched-link"></a>
                         </div>
                     </div>
