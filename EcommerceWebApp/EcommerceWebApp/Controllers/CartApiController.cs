@@ -11,8 +11,8 @@ namespace EcommerceWebApp.Controllers
         [HttpGet("count")]
         public IActionResult GetCartCount()
         {
-            var cart = HttpContext.Session.GetObject<List<CartItem>>("Cart");
-            int count = cart?.Count ?? 0;
+            var cart = HttpContext.Session.GetObject<Cart>("Cart");
+            int count = cart?.Items.Count ?? 0;
             return Ok(new { count });
         }
     }
