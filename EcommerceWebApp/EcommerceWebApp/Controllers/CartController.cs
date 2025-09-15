@@ -122,6 +122,21 @@ namespace EcommerceWebApp.Controllers
             return RedirectToAction("Cart");
         }
 
+        [HttpPost]
+        public IActionResult ClearCart(string returnUrl)
+        {
+            var cart = GetCart();
+            cart.Items.Clear();
+            SaveCart(cart);
+
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
         private Cart GetCart()
         {
             return HttpContext.Session.GetObject<Cart>(CartSessionKey) ?? new Cart();
