@@ -1,5 +1,133 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Cart
 @{
+    ViewData["Title"] = "Cart";
 }
+
+@Html.AntiForgeryToken()
+@foreach (var cartItem in Model.Items)
+{
+    <div class="swipe-item mx-5 my-4 border-bottom" data-sku="@cartItem.ProductSku">
+        <div class="swipe-content">
+            <div class="d-flex position-relative">
+                <div class="me-auto">
+                    <span class="fw-bold mr-3">@cartItem.ProductSku</span>
+                    <span class="fw-bold" style="color: #31DE96">@cartItem.ProductStockQuantity stock</span>
+                    <p class="card-title">@cartItem.ProductName</p>
+                    <p id="price-display">RM @cartItem.UnitPrice</p>
+                
+                </div>
+                <div>
+                    <img src="@cartItem.ProductImageUrl" class="flex-shrink-0 ms-auto rounded" alt="Product Image" height="200" width="200">
+                </div>
+
+            </div>
+            <div class="swipe-actions">
+                <form asp-action="IncreaseQuantity" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="variationId" value="@cartItem.ProductId" />
+                    <button type="submit" class="btn increase" >+1</button>
+                </form>
+
+                <form asp-action="DecreaseQuantity" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="variationId" value="@cartItem.ProductId" />
+                    <button type="submit" class="btn decrease">−1</button>
+                </form>
+                <form asp-action="RemoveItem" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="variationId" value="@cartItem.ProductId" />
+                    <button type="submit" class="btn delete">Remove</button>
+                </form>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 my-3 product-details">
+                <div class="border-start border-primary border-4 px-2 mr-3">
+                    <span class="text-muted">Order</span>
+                    <p class="mb-0 fw-bold">@cartItem.Quantity @cartItem.UnitOfMeasurement</p>
+                </div>
+                <div class="border-start border-warning border-4 px-2 mr-3">
+                    <span class="text-muted">Total</span>
+                    <p class="mb-0 fw-bold">RM @(cartItem.Quantity * cartItem.UnitPrice)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<div class="footer border-top">
+    <div class="d-flex">
+        <div class="mt-3 mx-3">
+            <p class="text-muted mb-0">Total (@Model.Items.Count)</p>
+            <p><strong>RM @Model.TotalPrice</strong></p>
+        </div>
+        <div class="ms-auto me-3 align-self-center">
+            <button class="btn btn-primary px-3 rounded-pill">Checkout</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.swipe-item').forEach(item => {
+        let startX = 0;
+        let currentX = 0;
+        let threshold = 50;
+        let isDragging = false;
+
+        const content = item.querySelector('.swipe-content');
+        const deleteBtn = item.querySelector('.delete');
+
+        // Mouse drag events
+        item.addEventListener('mousedown', e => {
+            isDragging = true;
+            startX = e.clientX;
+            item.style.userSelect = "none"; // prevent text highlight
+        });
+
+        item.addEventListener('mousemove', e => {
+            if (!isDragging) return;
+            currentX = e.clientX - startX;
+
+            if (currentX < 0) { // only allow drag left
+                content.style.transform = `translateX(${currentX}px)`;
+            }
+        });
+
+        item.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+
+            if (currentX < -threshold) {
+                content.style.transform = "translateX(-260px)"; // slide left by exactly the button’s width + margin
+            } else {
+                content.style.transform = "translateX(0)";
+            }
+
+            startX = currentX = 0;
+            item.style.userSelect = "auto";
+        });
+
+        // Delete button click
+        deleteBtn.addEventListener('click', async () => {
+            const sku = item.dataset.sku;
+            const response = await fetch(`/Cart/RemoveItem?sku=${sku}`, { method: "POST" });
+            if (response.ok) {
+                item.remove();
+            }
+        });
+    });
+
+    function addQuantity(button){
+        let variationId = button.dataset.variationId;
+
+        fetch('/Cart/Add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: JSON.stringify({ variationId, quantity: 1 })
+        })
+        .then(res => res.json());
+    }
+</script>
