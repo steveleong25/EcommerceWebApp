@@ -94,7 +94,6 @@ namespace EcommerceWebApp.Data
                             StockKeepingUnit = reader.GetString("sku"),
                             StockQuantity = reader.GetInt32("stock_quantity"),
 
-                            // Store raw variation string (as in your model)
                             VariationIds = reader.IsDBNull(reader.GetOrdinal("variation_ids"))
                                 ? string.Empty
                                 : reader.GetString("variation_ids")

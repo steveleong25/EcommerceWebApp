@@ -15,6 +15,8 @@ namespace EcommerceWebApp.Controllers
         public IActionResult Category(string category)
         {
             var productList = _productService.GetProductsAsync().Result;
+
+            // Filter products by category
             productList = productList.Where(p => p.Categories.Any(c => c.CategoryName.Equals(category, StringComparison.OrdinalIgnoreCase))).ToList();
 
             ViewBag.SelectedCategory = category;

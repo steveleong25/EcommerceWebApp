@@ -23,6 +23,7 @@ namespace EcommerceWebApp.Controllers
             var productList = _productRepository.GetProducts().Result;
             foreach (var item in cart.Items)
             {
+                // Find the product that contains the variation
                 var product = productList.FirstOrDefault(p => !string.IsNullOrEmpty(p.VariationIds) &&
                                                             p.VariationIds.Split(',', StringSplitOptions.RemoveEmptyEntries)
                                                                 .Select(id => int.Parse(id.Trim()))
@@ -42,6 +43,7 @@ namespace EcommerceWebApp.Controllers
         {
             // Get product details
             var productList = _productRepository.GetProducts().Result;
+            // Find the product that contains the variation
             var product = productList.FirstOrDefault(p => !string.IsNullOrEmpty(p.VariationIds) &&
                                                         p.VariationIds.Split(',', StringSplitOptions.RemoveEmptyEntries)
                                                             .Select(id => int.Parse(id.Trim()))
@@ -99,7 +101,8 @@ namespace EcommerceWebApp.Controllers
                 var cartItem = cart.Items.First(i => i.ProductId == variationId);
                 cartItem.Quantity--;
 
-                if (cartItem.Quantity <= 0)
+                // Remove item if quantity is zero
+                if (cartItem.Quantity == 0)
                     cart.Items.Remove(cartItem);
 
                 SaveCart(cart);
