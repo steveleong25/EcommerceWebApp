@@ -3,6 +3,16 @@
     ViewData["Title"] = "Home Page";
 }
 
+<div class="d-flex align-items-center mx-3 mb-4">
+    <input id="searchInput" class="form-control me-2" placeholder="Search" onkeyup="filterProducts()" />
+    <div class="cart-wrapper position-relative">
+        <a class="btn" asp-action="Cart" asp-controller="Cart">
+            <i class="fa-solid fa-cart-shopping fa-lg"></i>
+        </a>
+        <span id="cartBadge" class="cart-badge" style="display: none">0</span>
+    </div>
+</div>
+
 <div class="container-xxl">
     <h4>All Categories</h4>
     <div class="container mt-4">

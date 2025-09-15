@@ -54,23 +54,8 @@
         </nav>
     </header>
 
-    <div class="d-flex align-items-center mx-3 mb-4">
-        <input id="searchInput" class="form-control me-2" placeholder="Search" onkeyup="filterProducts()" />
-        <div class="cart-wrapper position-relative">
-            <a class="btn">
-                <i class="fa-solid fa-cart-shopping fa-lg"></i>
-            </a>
-            <span id="cartBadge" class="cart-badge" style="display: none">0</span>
-        </div>
-    </div>
-
     @RenderBody()
 
-    <footer class="border-top footer text-muted">
-        <div class="mx-3">
-            &copy; 2025 - EcommerceWebApp
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
