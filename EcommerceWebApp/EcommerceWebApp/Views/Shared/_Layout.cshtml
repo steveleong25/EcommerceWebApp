@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EcommerceWebApp.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/fontawesome/css/fontawesome.css" />
+    <link rel="stylesheet" href="~/fontawesome/css/brands.css" />
+    <link rel="stylesheet" href="~/fontawesome/css/solid.css" />
 </head>
 <body>
     <header>
@@ -43,10 +46,19 @@
                                 <i class="fa-solid fa-circle-user fa-xl"></i>
                             </a>
                         </li>
-                        <li>
-                            <a class="nav-link text-white" href="#">
+                        <li class="dropdown">
+                            <button class="nav-link text-white btn btn-link" type="button" data-bs-toggle="dropdown" id="dropdownMenuButton">
                                 <i class="fa-solid fa-ellipsis-vertical fa-xl"></i>
-                            </a>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <form asp-controller="Cart" asp-action="ClearCart" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                        <button type="submit" class="dropdown-item">Clear Cart</button>
+                                    </form>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
@@ -59,7 +71,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://kit.fontawesome.com/a293bfc92d.js" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

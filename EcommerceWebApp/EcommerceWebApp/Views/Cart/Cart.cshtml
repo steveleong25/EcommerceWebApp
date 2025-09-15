@@ -3,54 +3,63 @@
     ViewData["Title"] = "Cart";
 }
 
-@Html.AntiForgeryToken()
-@foreach (var cartItem in Model.Items)
+@if (Model.Items.Any())
 {
-    <div class="swipe-item mx-5 my-4 border-bottom" data-sku="@cartItem.ProductSku">
-        <div class="swipe-content">
-            <div class="d-flex position-relative">
-                <div class="me-auto">
-                    <span class="fw-bold mr-3">@cartItem.ProductSku</span>
-                    <span class="fw-bold" style="color: #31DE96">@cartItem.ProductStockQuantity stock</span>
-                    <p class="card-title">@cartItem.ProductName</p>
-                    <p id="price-display">RM @cartItem.UnitPrice</p>
+    @Html.AntiForgeryToken()
+    @foreach (var cartItem in Model.Items)
+    {
+        <div class="swipe-item mx-5 my-4 border-bottom" data-sku="@cartItem.ProductSku">
+            <div class="swipe-content">
+                <div class="d-flex position-relative">
+                    <div class="me-auto">
+                        <span class="fw-bold mr-3">@cartItem.ProductSku</span>
+                        <span class="fw-bold" style="color: #31DE96">@cartItem.ProductStockQuantity stock</span>
+                        <p class="card-title">@cartItem.ProductName</p>
+                        <p id="price-display">RM @cartItem.UnitPrice</p>
                 
+                    </div>
+                    <div>
+                        <img src="@cartItem.ProductImageUrl" class="flex-shrink-0 ms-auto rounded" alt="Product Image" height="200" width="200">
+                    </div>
+
                 </div>
-                <div>
-                    <img src="@cartItem.ProductImageUrl" class="flex-shrink-0 ms-auto rounded" alt="Product Image" height="200" width="200">
+                <div class="swipe-actions">
+                    <form asp-action="IncreaseQuantity" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="variationId" value="@cartItem.ProductId" />
+                        <button type="submit" class="btn increase" >+1</button>
+                    </form>
+
+                    <form asp-action="DecreaseQuantity" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="variationId" value="@cartItem.ProductId" />
+                        <button type="submit" class="btn decrease">−1</button>
+                    </form>
+                    <form asp-action="RemoveItem" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="variationId" value="@cartItem.ProductId" />
+                        <button type="submit" class="btn delete">Remove</button>
+                    </form>
                 </div>
 
-            </div>
-            <div class="swipe-actions">
-                <form asp-action="IncreaseQuantity" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="variationId" value="@cartItem.ProductId" />
-                    <button type="submit" class="btn increase" >+1</button>
-                </form>
-
-                <form asp-action="DecreaseQuantity" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="variationId" value="@cartItem.ProductId" />
-                    <button type="submit" class="btn decrease">−1</button>
-                </form>
-                <form asp-action="RemoveItem" method="post">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="variationId" value="@cartItem.ProductId" />
-                    <button type="submit" class="btn delete">Remove</button>
-                </form>
-            </div>
-
-            <div class="d-flex justify-content-end gap-2 my-3 product-details">
-                <div class="border-start border-primary border-4 px-2 mr-3">
-                    <span class="text-muted">Order</span>
-                    <p class="mb-0 fw-bold">@cartItem.Quantity @cartItem.UnitOfMeasurement</p>
-                </div>
-                <div class="border-start border-warning border-4 px-2 mr-3">
-                    <span class="text-muted">Total</span>
-                    <p class="mb-0 fw-bold">RM @(cartItem.Quantity * cartItem.UnitPrice)</p>
+                <div class="d-flex justify-content-end gap-2 my-3 product-details">
+                    <div class="border-start border-primary border-4 px-2 mr-3">
+                        <span class="text-muted">Order</span>
+                        <p class="mb-0 fw-bold">@cartItem.Quantity @cartItem.UnitOfMeasurement</p>
+                    </div>
+                    <div class="border-start border-warning border-4 px-2 mr-3">
+                        <span class="text-muted">Total</span>
+                        <p class="mb-0 fw-bold">RM @(cartItem.Quantity * cartItem.UnitPrice)</p>
+                    </div>
                 </div>
             </div>
         </div>
+    }
+}
+else
+{
+    <div>
+        <h3 class="text-center fw-bold">Your cart is empty!</h3>
     </div>
 }
 
