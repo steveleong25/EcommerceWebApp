@@ -1,5 +1,15 @@
 ﻿@model List<Product>
 
+<div class="d-flex align-items-center mx-3 mb-4">
+    <input id="searchInput" class="form-control me-2" placeholder="Search" onkeyup="filterProducts()" />
+    <div class="cart-wrapper position-relative">
+        <a class="btn" asp-action="Cart" asp-controller="Cart">
+            <i class="fa-solid fa-cart-shopping fa-lg"></i>
+        </a>
+        <span id="cartBadge" class="cart-badge" style="display: none">0</span>
+    </div>
+</div>
+
 @Html.AntiForgeryToken()
 @foreach(var product in Model)
 {
@@ -35,6 +45,9 @@
                 <button class="btn btn-outline-secondary btn-sm" type="button" onclick="increaseQty(this)">+</button>
             </div>
 
+            <input type="hidden" class="product-name" value="@product.ProductName" />
+            <input type="hidden" class="product-sku" value="@product.StockKeepingUnit" />
+                 
             <button class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center align-middle" onclick="addToCart(this)" style="width:40px;height:40px;">
                 <i class="fa-solid fa-plus"></i>
             </button>
@@ -74,6 +87,8 @@
         let container = button.closest(".product-details");
         let variationId = container.querySelector("select").value;
         let quantity = container.querySelector("input").value;
+        let productName = container.querySelector(".product-name").value;
+        let productSku = container.querySelector(".product-sku").value;
 
         fetch('/Cart/Add', {
             method: 'POST',
@@ -81,7 +96,7 @@
                 'Content-Type': 'application/json',
                 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
             },
-            body: JSON.stringify({ variationId, quantity })
+            body: JSON.stringify({ variationId, quantity, productName, productSku })
         })
         .then(res => res.json()
         .then( 
