@@ -35,7 +35,7 @@
                 <!-- 3 per row -->
                 <div class="col-md-4 mb-4 product-card">
                     <div class="card h-100 shadow-sm">
-                        <img src="@(product.ImageUrl.Any() ? product.ImageUrl[0].SourceSmall : "")" class="card-img-top" alt="Product Image" height="150" />
+                        <img src="@(product.ImageUrl.Any() ? product.ImageUrl[0].SourceSmall : "")" class="card-img-top" alt="@product.ProductName" height="150" />
                         <div class="card-body">
                             <h5 class="card-title">@product.ProductName</h5>
                             @if (product.Variations.Any())
