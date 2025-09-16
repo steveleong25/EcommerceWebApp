@@ -28,12 +28,11 @@ public class ProductService
 
         var productsApiUrl = QueryHelpers.AddQueryString(_apiSettings.GetProductsUrl, "page", "1");
 
-        // Call API
-        var response = await _httpClient.GetAsync(productsApiUrl);
-        response.EnsureSuccessStatusCode();
-
-        response.Headers.TryGetValues("X-WC-Total", out var totalProducts);
-        response.Headers.TryGetValues("X-WC-TotalPages", out var totalPages);
+        // Call API HEAD to get headers
+        var headResponse = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Head, _apiSettings.GetProductsUrl));
+        headResponse.EnsureSuccessStatusCode();
+        headResponse.Headers.TryGetValues("X-WC-Total", out var totalProducts);
+        headResponse.Headers.TryGetValues("X-WC-TotalPages", out var totalPages);
 
         // Check if database has the same records as API data
         var products = await _productRepository.GetProducts();
@@ -42,7 +41,11 @@ public class ProductService
             return products.Where(p => p.ProductType.Equals("variable")).ToList();
         }
 
-        var jsonString = await response.Content.ReadAsStringAsync();
+        // Else, send a GET to get products
+        var getResponse = await _httpClient.GetAsync(productsApiUrl);
+        getResponse.EnsureSuccessStatusCode();
+
+        var jsonString = await getResponse.Content.ReadAsStringAsync();
 
         dynamic jsonData = JsonConvert.DeserializeObject(jsonString);
 
@@ -57,10 +60,10 @@ public class ProductService
         {
             productsApiUrl = QueryHelpers.AddQueryString(_apiSettings.GetProductsUrl, "page", (i).ToString());
 
-            response = await _httpClient.GetAsync(productsApiUrl);
-            response.EnsureSuccessStatusCode();
+            getResponse = await _httpClient.GetAsync(productsApiUrl);
+            getResponse.EnsureSuccessStatusCode();
 
-            jsonString = await response.Content.ReadAsStringAsync();
+            jsonString = await getResponse.Content.ReadAsStringAsync();
             jsonData = JsonConvert.DeserializeObject(jsonString);
 
             _productRepository.AddProducts(jsonData);
